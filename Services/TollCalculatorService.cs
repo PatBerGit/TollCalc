@@ -1,9 +1,21 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Globalization;
-using TollFeeCalculator;
+using TollCalculator.Configurations;
+using TollCalculator.Model;
+using TollCalculator.Model.Enums;
 
-public class TollCalculator
+namespace TollCalculator.Services;
+
+public class TollCalculatorService
 {
+
+    private readonly List<TollRateOptions> _tollRates;
+
+    public TollCalculatorService(IOptions<List<TollRateOptions>> tollRatesOptions)
+    {
+        _tollRates = tollRatesOptions.Value;
+    }
 
     /**
      * Calculate the total toll fee for one day
@@ -52,7 +64,7 @@ public class TollCalculator
                vehicleType.Equals(TollFreeVehicles.Military.ToString());
     }
 
-    public int GetTollFee(DateTime date, Vehicle vehicle)
+    public int GetTollFee(DateTime date,Vehicle vehicle)
     {
         if (IsTollFreeDate(date) || IsTollFreeVehicle(vehicle)) return 0;
 
@@ -94,15 +106,5 @@ public class TollCalculator
             }
         }
         return false;
-    }
-
-    private enum TollFreeVehicles
-    {
-        Motorbike = 0,
-        Tractor = 1,
-        Emergency = 2,
-        Diplomat = 3,
-        Foreign = 4,
-        Military = 5
     }
 }

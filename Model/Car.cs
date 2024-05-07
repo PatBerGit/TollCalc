@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TollFeeCalculator
+namespace TollCalculator.Model
 {
-    public class Motorbike : Vehicle
+    public class Car : Vehicle
     {
         public string GetVehicleType()
         {
-            return "Motorbike";
+            return "Car";
         }
     }
 }
