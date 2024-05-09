@@ -35,6 +35,7 @@ namespace TollCalculator.Services
             }
 
             // Parse the JSON response to check if it's a public holiday or a non-working day
+            
             var responseData = await response.Content.ReadAsAsync<SholidayApiResponse>();
 
             // Check if Dagar is null before accessing it
