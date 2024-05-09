@@ -9,16 +9,15 @@
         public class TollCalculatorSettings
     {
         public List<TollRateOptions> TollRateOptions { get; set; }
-        public List<DateTime> TollFreeDates { get; set; }
         public List<TollFreeVehicles> TollFreeVehicleTypes { get; set; }
 
         public int MaxDailyFee { get; set; }
+        public string? HolidayApiUrl { get; set; }
 
-        public TollCalculatorSettings()
+            public TollCalculatorSettings()
         {
             TollRateOptions = new List<TollRateOptions>();
-            TollFreeDates = new List<DateTime>();
-            TollFreeVehicleTypes = new List<TollFreeVehicles>();
+            TollFreeVehicleTypes = new List<TollFreeVehicles>(); 
         }
     }
 }
