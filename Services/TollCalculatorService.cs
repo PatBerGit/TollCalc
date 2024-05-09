@@ -56,30 +56,49 @@ namespace TollCalculator.Services
         }
 
 
-        public int GetTollFee(DateTime date, string vehicleType)
+        public int GetTollFee(List<DateTime> timestamps, string vehicleType)
         {
-            // Check if the date is toll-free using the API
-            bool isTollFree = IsTollFreeDateAsync(date).Result;
+            // Check if any of the timestamps are toll-free using the API
+            bool isAnyTollFree = timestamps.Any(timestamp => IsTollFreeDateAsync(timestamp).Result);
 
-            if (isTollFree || IsTollFreeVehicle(vehicleType))
+            if (isAnyTollFree || IsTollFreeVehicle(vehicleType))
             {
                 return 0;
             }
 
-            int hour = date.Hour;
-            int minute = date.Minute;
+            // Initialize maxTollRate with a default value
+            int maxTollRate = 0;
 
-            foreach (var tollRate in _settings.TollRateOptions)
+            // Loop through each timestamp
+            foreach (var timestamp in timestamps)
             {
-                if (hour == tollRate.Hour &&
-                    minute >= tollRate.MinuteStart &&
-                    minute <= tollRate.MinuteEnd)
+                int hour = timestamp.Hour;
+                int minute = timestamp.Minute;
+
+                // Find all applicable toll rates for the current hour and minute
+                var applicableTollRates = _settings.TollRateOptions
+                    .Where(tollRate =>
+                        tollRate.Hour == hour &&
+                        minute >= tollRate.MinuteStart &&
+                        minute <= tollRate.MinuteEnd)
+                    .ToList();
+
+                if (applicableTollRates.Count == 0)
                 {
-                    return tollRate.Rate;
+                    continue; // No applicable toll rates found for the current timestamp, move to the next timestamp
+                }
+
+                // Find the highest toll rate among the applicable rates for the current timestamp
+                int maxTollRateForTimestamp = applicableTollRates.Max(tollRate => tollRate.Rate);
+
+                // Update maxTollRate if the current timestamp has a higher toll rate
+                if (maxTollRateForTimestamp > maxTollRate)
+                {
+                    maxTollRate = maxTollRateForTimestamp;
                 }
             }
 
-            return 0; // Default to 0 if no toll rate is found
+            return maxTollRate;
         }
 
         private bool IsTollFreeVehicle(string vehicleType)

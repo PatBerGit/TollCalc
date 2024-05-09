@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
 using TollCalculator.Configurations;
 using TollCalculator.Configurations.TollCalculator.Configuration;
 using TollCalculator.Model;
@@ -60,8 +62,8 @@ namespace TollCalculator
                                 // Create Vehicle object with the provided type
 
                                 // Calculate toll fee
-                                int tollFee = tollCalculator.GetTollFee(date, vehicleType);
-                                Console.WriteLine("Tullkostnad" + tollFee);
+                                int tollFee = tollCalculator.GetTollFee(new List<DateTime> { date }, vehicleType);
+                                Console.WriteLine("Toll Fee: " + tollFee);
 
                                 // Return the toll fee in the response
                                 await context.Response.WriteAsync($"Toll fee for {date} with vehicle type {vehicleType}: {tollFee}");
