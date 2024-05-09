@@ -15,6 +15,10 @@ namespace TollCalculator.Services
         public TollCalculatorService(IOptions<TollCalculatorSettings> settings, HttpClient httpClient)
         {
             _settings = settings.Value;
+
+            // Set the base address for HttpClient
+            httpClient.BaseAddress = new Uri(_settings.HolidayApiUrl);
+
             _httpClient = httpClient;
         }
 
@@ -47,7 +51,7 @@ namespace TollCalculator.Services
                 throw new Exception($"No data found for the specified date: {date}");
             }
 
-            return dayInfo.RödDag == "Ja" || dayInfo.ArbetsfriDag == "Ja";
+            return dayInfo.Holiday == "Ja" || dayInfo.WorkFreeDay == "Ja";
         }
 
 
